@@ -1,0 +1,221 @@
+encoding=UTF-8
+# Configuration files must begin with a line specifying the encoding of the the file.
+
+# Include file problems can be debugged by removing the first '#' from the following line:
+##include.debug
+
+#********************************************************************
+# Environment Variables
+#********************************************************************
+
+# JAVA_HOME Environment Variable
+set.JAVA_HOME=<%= @java_home %>
+
+# JBOSS_HOME Environment Variable
+set.JBOSS_HOME=<%= @jboss_wildfly_home %>
+set.JBOSS_USER_HOME=<%= @jboss_user_home %>
+
+#********************************************************************
+# Wrapper Java Properties
+#********************************************************************
+
+# Java Application.
+# The command to use when launching a JVM - java executable.
+wrapper.java.command=%JAVA_HOME%/bin/java
+
+# Tell the Wrapper to log the full generated Java command line.
+wrapper.java.command.loglevel=INFO
+
+# Java Main class. Class to execute when the wrapper starts the application.
+wrapper.java.mainclass=org.tanukisoftware.wrapper.WrapperSimpleApp
+
+# Java Classpath. Add JDK, Wrapper, JBoss Modules jar
+wrapper.java.classpath.1=%JAVA_HOME%/lib/tools.jar
+wrapper.java.classpath.2=%JBOSS_HOME%/lib/wrapper.jar
+wrapper.java.classpath.3=%JBOSS_HOME%/jboss-modules.jar
+
+# JVM parameter - Use server VM
+wrapper.java.additional.1=-server
+
+# JVM parameter - initial heap size for the JVM
+wrapper.java.additional.2=<%= @heap_initial %>
+
+# JVM parameter - maximum heap size for the JVM
+wrapper.java.additional.3=<%= @heap_max %>
+
+# JVM parameter - initial heap size for the young generation. (1/3 of the total heap size)
+wrapper.java.additional.4=<%= @heap_new_initial %>
+
+# JVM parameter - maximum heap size for the young generation. (1/3 of the total heap size)
+wrapper.java.additional.5=<%= @heap_new_max %>
+
+wrapper.java.additional.7=<%= @metaspace_max %>
+
+# Reduces the default maximum thread stack size, which allows more of the process' virtual memory address space to be used by the Java heap.
+wrapper.java.additional.8=<%= @thread_stack_size %>
+
+# This flag turns on parallel garbage collection
+# Uses parallel collector (also known as the throughput collector)
+wrapper.java.additional.9=-XX:+UseParallelGC
+
+# Allows the parallel collector to perform major collections in parallel
+# Without parallel compaction, major collections are performed using a single thread
+# Parallel compaction is enabled by adding the below option flag
+wrapper.java.additional.10=-XX:+UseParallelOldGC
+
+# Sets survivor space ratio to 1:8, resulting in larger survivor spaces (the smaller the ratio, the larger the space).
+# Larger survivor spaces allow short lived objects a longer time period to die in the young generation.
+wrapper.java.additional.11=-XX:SurvivorRatio=8
+
+# JVM parameter - Turns on the logging of Garbage Collection information
+wrapper.java.additional.12=-verbose:gc
+
+# JVM parameter - Prints detailed information about Garbage Collection
+# Depricated in Java 11
+#wrapper.java.additional.13=-XX:+PrintGCDetails
+
+# JVM parameter -  Prints the times at which the GCs happen relative to the start of the application
+# Depricated in Java 11
+#wrapper.java.additional.14=-XX:+PrintGCTimeStamps
+
+# JVM parameter - Specifies the name of the log file where the "-verbose:gc" information can be logged.
+#java 11
+wrapper.java.additional.15=-Xlog:gc*:file=%JBOSS_USER_HOME%/app/log/gc.log
+
+#java 8
+#wrapper.java.additional.15=-Xloggc:%JBOSS_USER_HOME%/app/log/gc.log
+
+
+# JVM parameter - Sets User Transaction to JTA
+wrapper.java.additional.16=-Duser.transaction=jta
+
+# JVM parameter - JBoss
+wrapper.java.additional.18=-Djboss.server.base.dir=%JBOSS_USER_HOME%/<%= @jboss_server %>
+wrapper.java.additional.19=-Djboss.server.log.dir=%JBOSS_USER_HOME%/<%= @jboss_server %>/log
+wrapper.java.additional.20=-Djboss.server.config.dir=%JBOSS_USER_HOME%/<%= @jboss_server %>/configuration
+wrapper.java.additional.21=-Dorg.jboss.boot.log.file=%JBOSS_USER_HOME%/<%= @jboss_server %>/log/server.log
+wrapper.java.additional.22=-Dlogging.configuration=file:%JBOSS_USER_HOME%/<%= @jboss_server %>/configuration/logging.properties
+wrapper.java.additional.23=-Djboss.home.dir=%JBOSS_HOME%
+wrapper.java.additional.24=-Djboss.modules.system.pkgs=org.jboss.byteman
+wrapper.java.additional.25=-Djava.awt.headless=true
+wrapper.java.additional.26=-Dprogram.name=<%= @jboss_server %>
+
+# Force use of IPv4 stack
+wrapper.java.additional.27=-Djava.net.preferIPv4Stack=true
+
+wrapper.java.additional.28=-Dorg.tanukisoftware.wrapper.WrapperManager.mbean=false
+
+# JVM parameter - By default the WrapperSimpleApp class will wait 2 seconds for the
+# application's main method to complete. This property allows the 2 second wait time
+# to be overridden. Set to 180 seconds
+wrapper.java.additional.29=-Dorg.tanukisoftware.wrapper.WrapperSimpleApp.maxStartMainWait=180
+
+wrapper.java.additional.30=-DjvmRoute=<%= @jboss_node %>
+wrapper.java.additional.31=-Dorg.jboss.as.logging.per-deployment=false
+wrapper.java.additional.32=-Djboss.bind.address.management=<%= @bind_address %>
+wrapper.java.additional.33=-Djboss.bind.address.unsecure=127.0.0.1
+wrapper.java.additional.34=-Djavax.net.ssl.trustStore=%JBOSS_USER_HOME%/<%= @jboss_server %>/configuration/server.keystore
+wrapper.java.additional.35=-Djavax.net.ssl.trustStorePassword=TRUST_STORE_PASSWORD
+wrapper.java.additional.36=-XX:MaxMetaspaceFreeRatio=70
+#wrapper.java.additional.37=
+<%= @dynaTrace38 %>
+wrapper.java.additional.39=-Djavax.net.ssl.keyStore=%JBOSS_USER_HOME%/<%= @jboss_server %>/configuration/server.keystore
+wrapper.java.additional.40=-Djavax.net.ssl.keyStorePassword=KEY_STORE_PASSWORD
+wrapper.java.additional.41=-Djboss.node.name=<%= @jboss_node %>
+wrapper.java.additional.42=-Dprogram.environment=<%= @application_env %>
+wrapper.java.additional.43=-Dprogram.type=<%= @application_type %>
+wrapper.java.additional.44=--add-modules=java.se
+
+# enable debugger#disabled by default
+#wrapper.java.additional.45=-Xdebug
+#wrapper.java.additional.46=-Xrunjdwp:transport=dt_socket,address=<%= @bind_address %>:8787,server=y,suspend=n
+
+# Number of seconds to allow between the wrapper pinging the JVM and the response. The ping timeout is the amount of time
+# to allow for a response from the JVM before the Wrapper assumes that it is hung and restarts it. Defaults to 30 seconds.
+# The timeout has been extended to avoid restart due to long Garbage Collection cycles.
+wrapper.ping.timeout=120
+
+# Application parameters to pass to the application when it is launched.
+wrapper.app.parameter.1=org.jboss.modules.Main
+wrapper.app.parameter.2=-mp
+wrapper.app.parameter.3=%JBOSS_HOME%/modules
+wrapper.app.parameter.4=-jaxpmodule
+wrapper.app.parameter.5=javax.xml.jaxp-provider
+wrapper.app.parameter.6=org.jboss.as.standalone
+wrapper.app.parameter.7=-Djboss.home.dir=%JBOSS_HOME%
+wrapper.app.parameter.8=-Djboss.server.base.dir=%JBOSS_USER_HOME%/<%= @jboss_server %>
+wrapper.app.parameter.9=-b
+wrapper.app.parameter.10=<%= @bind_address %>
+wrapper.app.parameter.11=-bmanagement
+wrapper.app.parameter.12=<%= @bind_address %>
+wrapper.app.parameter.13=-server-config=standalone-full.xml
+
+#********************************************************************
+# Wrapper Logging Properties
+#********************************************************************
+
+# Enables Debug output from the Wrapper.
+# wrapper.debug=TRUE
+
+# Format of output for the console.  (See docs for formats)
+wrapper.console.format=LPDTM
+
+# Log Level for console output.  (See docs for log levels)
+wrapper.console.loglevel=INFO
+
+# Log file to use for wrapper output logging.
+wrapper.logfile=%JBOSS_USER_HOME%/<%= @jboss_server %>/log/wrapper.log
+
+# Format of output for the log file.  (See docs for formats)
+wrapper.logfile.format=LPDTM
+
+# Log Level for log file output.  (See docs for log levels)
+wrapper.logfile.loglevel=INFO
+
+# Maximum size that the log file will be allowed to grow to before
+#  the log is rolled. Size is specified in bytes.  The default value
+#  of 0, disables log rolling.  May abbreviate with the 'k' (kb) or
+#  'm' (mb) suffix.  For example: 10m = 10 megabytes.
+wrapper.logfile.maxsize=100m
+
+# Controls the roll mode of the log file.
+# SIZE_OR_JVM - This mode combines the SIZE and JVM  modes. The logfile
+# will be rolled on Wrapper startup, JVM restart, or whenever the logfile
+# exceeds the configured maximum size.
+wrapper.logfile.rollmode=SIZE_OR_JVM
+
+# Maximum number of rolled log files which will be allowed before old
+#  files are deleted.  The default value of 0 implies no limit.
+wrapper.logfile.maxfiles=0
+
+# Log Level for sys/event log output.  (See docs for log levels)
+wrapper.syslog.loglevel=NONE
+
+#********************************************************************
+# Wrapper General Properties
+#********************************************************************
+
+# Allow for the use of non-contiguous numbered properties
+wrapper.ignore_sequence_gaps=TRUE
+
+# Do not start if the pid file already exists.
+wrapper.pidfile.strict=TRUE
+
+# Title to use when running as a console
+wrapper.console.title=<%= @jboss_server %>
+
+#********************************************************************
+# Wrapper JVM Checks
+#********************************************************************
+
+# Out Of Memory detection.
+# Ignore -verbose:class output to avoid false positives.
+wrapper.filter.trigger.1000=[Loaded java.lang.OutOfMemoryError
+wrapper.filter.action.1000=NONE
+# (Simple match)
+wrapper.filter.trigger.1001=java.lang.OutOfMemoryError
+# (Only match text in stack traces if -XX:+PrintClassHistogram is being used.)
+#wrapper.filter.trigger.1001=Exception in thread "*" java.lang.OutOfMemoryError
+#wrapper.filter.allow_wildcards.1001=TRUE
+wrapper.filter.action.1001=RESTART
+wrapper.filter.message.1001=The JVM has run out of memory.
